@@ -6,6 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+function sendDbError(res, err, message) {
+  const status = err?.code === "DB_NOT_CONFIGURED" ? 503 : 500;
+  return res.status(status).json({ success: false, message });
+}
+
 /* ================================================
    HEALTH CHECK
 ================================================ */
@@ -23,7 +28,7 @@ app.get("/api/bookings", (req, res) => {
   db.query(sql, (err, rows) => {
     if (err) {
       console.error("GET /api/bookings error:", err);
-      return res.status(500).json({ success: false, message: "Failed to fetch bookings" });
+      return sendDbError(res, err, "Failed to fetch bookings");
     }
     res.json({ success: true, data: rows });
   });
@@ -35,7 +40,7 @@ app.get("/api/bookings/:id", (req, res) => {
   db.query(sql, [req.params.id], (err, rows) => {
     if (err) {
       console.error("GET /api/bookings/:id error:", err);
-      return res.status(500).json({ success: false, message: "Failed to fetch booking" });
+      return sendDbError(res, err, "Failed to fetch booking");
     }
     if (rows.length === 0) return res.status(404).json({ success: false, message: "Booking not found" });
     res.json({ success: true, data: rows[0] });
@@ -89,7 +94,7 @@ app.post("/api/bookings", (req, res) => {
   db.query(sql, values, (err, result) => {
     if (err) {
       console.error("POST /api/bookings error:", err);
-      return res.status(500).json({ success: false, message: "Failed to create booking" });
+      return sendDbError(res, err, "Failed to create booking");
     }
     res.status(201).json({
       success: true,
@@ -112,7 +117,7 @@ app.put("/api/bookings/:id/status", (req, res) => {
   db.query(sql, [status, id], (err, result) => {
     if (err) {
       console.error("PUT /api/bookings/:id/status error:", err);
-      return res.status(500).json({ success: false, message: "Failed to update booking status" });
+      return sendDbError(res, err, "Failed to update booking status");
     }
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, message: "Booking not found" });
@@ -127,7 +132,7 @@ app.delete("/api/bookings/:id", (req, res) => {
   db.query(sql, [req.params.id], (err, result) => {
     if (err) {
       console.error("DELETE /api/bookings/:id error:", err);
-      return res.status(500).json({ success: false, message: "Failed to delete booking" });
+      return sendDbError(res, err, "Failed to delete booking");
     }
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, message: "Booking not found" });
@@ -141,7 +146,7 @@ app.delete("/api/bookings/:id", (req, res) => {
 ================================================ */
 app.get("/api/requests", (req, res) => {
   db.query("SELECT * FROM travel_requests ORDER BY created_at DESC", (err, rows) => {
-    if (err) return res.status(500).json({ success: false, message: "Failed" });
+    if (err) return sendDbError(res, err, "Failed");
     res.json(rows);
   });
 });
@@ -151,7 +156,8 @@ app.get("/api/requests", (req, res) => {
 ================================================ */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`   Production URL: https://manivtha-travel-portal.onrender.com`);
   console.log(`   Endpoints:`);
   console.log(`   GET    /api/bookings`);
   console.log(`   GET    /api/bookings/:id`);

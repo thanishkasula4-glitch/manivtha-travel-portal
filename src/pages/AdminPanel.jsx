@@ -5,7 +5,7 @@ import UrlIcon from "../components/UrlIcon";
 import "./AdminPanel.css";
 
 /* ── API base ── */
-const API = "http://localhost:5000";
+const API = "https://manivtha-travel-portal.onrender.com";
 
 /* ── localStorage helpers (cache layer) ── */
 function getLocalBookings()  { return JSON.parse(localStorage.getItem("mtb_bookings") || "[]"); }

@@ -16,6 +16,7 @@ const CheckCircleIcon = () => <UrlIcon name="check-circle" size={64} color="#22c
 const ClockIcon = () => <UrlIcon name="schedule" size={64} color="#f5c518" />;
 
 /* ── Step Indicator ── */
+const API = "https://manivtha-travel-portal.onrender.com";
 const VEHICLE_SERVICES = new Set(["rent_car", "corporate"]);
 const needsVehicle = (service) => VEHICLE_SERVICES.has(service);
 
@@ -307,7 +308,7 @@ function StepPending({ data, bookingId }) {
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}`);
+        const res = await fetch(`${API}/api/bookings/${bookingId}`);
         if (res.ok) {
           const json = await res.json();
           if (json.success) {
@@ -433,7 +434,7 @@ function MyBookings({ activeBookingId }) {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/bookings");
+      const res = await fetch(`${API}/api/bookings`);
       if (res.ok) {
         const json = await res.json();
         if (json.success) {
@@ -581,7 +582,7 @@ export default function BookNow() {
     setSubmitError("");
     setSubmitting(true);
     try {
-      const res = await fetch("http://localhost:5000/api/bookings", {
+      const res = await fetch(`${API}/api/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -608,7 +609,7 @@ export default function BookNow() {
       console.error("Booking submission failed:", err);
       setSubmitError(
         err.message === "Failed to fetch"
-          ? "❌ Cannot reach the server. Please make sure the backend is running on port 5000."
+          ? "❌ Cannot reach the server. Please try again shortly."
           : `❌ ${err.message}`
       );
     } finally {
