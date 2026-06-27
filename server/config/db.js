@@ -5,7 +5,11 @@ const db = mysql.createConnection({
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT,
+  port: Number(process.env.MYSQLPORT),
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  connectTimeout: 30000,
 });
 
 db.connect((err) => {
@@ -15,7 +19,7 @@ db.connect((err) => {
     return;
   }
 
-  console.log("✅ MySQL Connected");
+  console.log("✅ MySQL Connected Successfully!");
 });
 
 module.exports = db;
