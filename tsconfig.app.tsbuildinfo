@@ -1,0 +1,1 @@
+{"root":["./src/app.jsx","./src/main.jsx","./src/components/navbar.jsx","./src/components/urlicon.jsx","./src/hooks/usescrollreveal.js","./src/pages/adminpanel.jsx","./src/pages/booknow.jsx","./src/pages/home.jsx","./src/pages/services.jsx","./src/routes/approutes.jsx"],"version":"6.0.3"}
