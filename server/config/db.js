@@ -1,15 +1,17 @@
 const mysql = require("mysql2");
 
+console.log("MYSQLHOST:", process.env.MYSQLHOST);
+console.log("MYSQLPORT:", process.env.MYSQLPORT);
+console.log("MYSQLUSER:", process.env.MYSQLUSER);
+console.log("MYSQLDATABASE:", process.env.MYSQLDATABASE);
+
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
+  port: Number(process.env.MYSQLPORT),
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  port: Number(process.env.MYSQLPORT),
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  connectTimeout: 30000,
+  connectTimeout: 20000,
 });
 
 db.connect((err) => {
@@ -19,7 +21,7 @@ db.connect((err) => {
     return;
   }
 
-  console.log("✅ MySQL Connected Successfully!");
+  console.log("✅ MySQL Connected");
 });
 
 module.exports = db;
